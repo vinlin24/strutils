@@ -5,13 +5,17 @@ Apply Python's ord() on all the characters within the input string, with
 support for different bases, such as hexadecimal, octal, and binary, as
 well as the option of including their respective prefixes (0x, 0o, 0b).
 
-REQUIRES: Python 3.10+
-
 EXAMPLES:
 
-    * ord -x "hello there"
-    * echo -e "hello\nthere\n" | ord -ep
-    * ord lmao -1 | awk 'BEGIN {s=0} {s += $1} END {print s}'
+    $ ord -x "hello there"
+    68 65 6c 6c 6f 20 74 68 65 72 65
+
+    $ echo -e "hello\nthere\n" | ord -ep
+    h   e   l   l   o   \n  t   h   e   r   e   \n  \n
+    104 101 108 108 111 010 116 104 101 114 101 010 010
+
+    $ ord lmao -1 | awk 'BEGIN {s=0} {s += $1} END {print s}'
+    425
 
 NOTE: If you supply multiple strings as a whitespace-separated list at
 the command line, it will be interpreted as the concatenation of the

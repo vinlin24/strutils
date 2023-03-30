@@ -5,14 +5,14 @@ Spread out the tokens and characters within a token of an input string.
 
 The tokenization of the input string is as follows:
 
-    * If provided as command line arguments, they are treated directly
-      as the tokens to use.  This means you should watch out for the
-      quoting and whitespace rules of the shell used to invoke this
-      script.
-    * If provided through stdin, the input is tokenized according to the
-      rule of Python's str.split() method (unless -1/--one-token is
-      provided, which forces the input to be treated as a single
-      string).
+* If provided as command line arguments, they are treated directly
+  as the tokens to use.  This means you should watch out for the
+  quoting and whitespace rules of the shell used to invoke this
+  script.
+* If provided through stdin, the input is tokenized according to the
+  rule of Python's str.split() method (unless -1/--one-token is
+  provided, which forces the input to be treated as a single
+  string).
 
 EXAMPLES:
 
@@ -21,8 +21,6 @@ EXAMPLES:
 
     $ echo -e 'general\tkenobi' | ./spread --char-sep _ --word-sep ' '
     g_e_n_e_r_a_l k_e_n_o_b_i
-
-REQUIRES: Python 3.10+
 """
 
 import sys
