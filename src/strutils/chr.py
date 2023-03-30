@@ -1,21 +1,31 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""chr
+"""
+Apply Python's chr() on all the input numbers, with support for
+different bases, such as hexadecimal, octal, and binary, through the use
+of their respective prefixes (0x, 0o/0, 0b).
 
-TODO.
+EXAMPLES:
 
-REQUIRES: Python 3.9+
+    $ chr 65 66 67
+    A B C
+
+    $ chr -e 0x50 0x52 0x4F
+    80 82 79
+    P  R  O
+
+    $ chr -d _ $(seq 68 75)
+    D_E_F_G_H_I_J_K
+
+TODO: Improvements to be made. Some options or combination of options do
+not yet work as intended.
 """
 
 import sys
-from argparse import ArgumentParser, ArgumentTypeError
+from argparse import ArgumentParser, ArgumentTypeError, RawTextHelpFormatter
 from pathlib import Path
 
 __author__ = "Vincent Lin"
-
-DESCRIPTION = """\
-TODO.
-"""
 
 
 def validate_int(value: str) -> int:
@@ -42,10 +52,11 @@ def validate_int(value: str) -> int:
 
 
 parser = ArgumentParser(prog=Path(sys.argv[0]).name,
-                        description=DESCRIPTION)
+                        description=__doc__,
+                        formatter_class=RawTextHelpFormatter)
 
 parser.add_argument("codes", metavar="CODE", nargs="*", type=validate_int,
-                    help="TODO.")
+                    help="numbers to interpret as Unicode codepoints")
 
 parser.add_argument("-e", "--echo", action="store_true",
                     help="print the original code points alongside")
