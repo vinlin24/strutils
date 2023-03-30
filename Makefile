@@ -9,6 +9,10 @@ PHONY: editable
 editable:
 	unset PIP_REQUIRE_VIRTUALENV && pip install -e .
 
+.PHONY: readme
+readme:
+	./update_readme.py
+
 .PHONY: clean
 clean:
 	-find . -maxdepth 1 -type d -name __pycache__ -exec rm -rf {} +
