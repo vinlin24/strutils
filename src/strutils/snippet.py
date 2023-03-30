@@ -10,6 +10,7 @@ EXAMPLES:
     $ ./snippet body.txt --indent 2
 """
 
+import io
 import json
 import sys
 from argparse import ArgumentParser, ArgumentTypeError, RawTextHelpFormatter
@@ -31,6 +32,8 @@ parser = ArgumentParser(prog=Path(sys.argv[0]).name,
                         formatter_class=RawTextHelpFormatter)
 parser.add_argument("file_path", metavar="FILE", nargs="?", type=Path,
                     help="file with raw snippet; read from stdin if omitted")
+parser.add_argument("-c", "--trailing-comma", action="store_true",
+                    help="end the last entry in the list with a comma")
 indentation_group = parser.add_mutually_exclusive_group()
 indentation_group.add_argument("-i", "--indent", type=valid_num_spaces_indent,
                                help="number of spaces to use as indentation")
@@ -42,6 +45,7 @@ def main() -> None:
     namespace = parser.parse_args()
 
     file_path: Path | None = namespace.file_path
+    trailing_comma: bool = namespace.trailing_comma
     indent: int | None = namespace.indent
     tabs: bool = namespace.tabs
 
@@ -60,12 +64,20 @@ def main() -> None:
 
     with source:
         input_lines = source.read().splitlines()
+    num_lines = len(input_lines)
 
-    print("[")
-    for line in input_lines:
+    output = io.StringIO()
+    output.write("[\n")
+    for line_num, line in enumerate(input_lines, start=1):
         escaped = json.dumps(line)
-        print(f"{indentation}{escaped},")
-    print("]")
+        output.write(indentation)
+        output.write(escaped)
+        if line_num < num_lines or trailing_comma:
+            output.write(",")
+        output.write("\n")
+    output.write("]")
+
+    print(output.getvalue())
 
 
 if __name__ == "__main__":
