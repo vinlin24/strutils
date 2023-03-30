@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "strutils"
+authors = [
+    {name = "Vincent Lin", email = "vinlin24@outlook.com"},
+]
+description = "Unix-like interfaces to Python string manipulation utilities"
+readme = "README.md"
+license = {file = "LICENSE"}
+requires-python = ">=3.10"
+keywords = ["string", "cli"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+]
+dependencies = []
+dynamic = ["version"]
+
+[project.scripts]
+chr = "strutils.chr:main"
+ord = "strutils.ord:main"
+snippet = "strutils.snippet:main"
+spread = "strutils.spread:main"
+
+[tool.setuptools.dynamic]
+version = {attr = "strutils.__version__"}
+
