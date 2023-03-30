@@ -12,17 +12,27 @@ convenient way to install command line scripts.
 
 ## Setup
 
+**REQUIREMENT:** Python 3.10+
+
 The scripts are mostly standalone but are bundled as a Python package to make
 distribution and installation more convenient. To install it globally on your
 machine:
 
 ```sh
 git clone https://github.com/vinlin24/strutils.git
-pip install ./strutils
+make install
 ```
 
-The installation process adds the scripts to your `PATH` such that you can use
-them like ordinary shell commands.
+This adds the scripts to your `PATH` such that you can use them like ordinary
+shell commands.
+
+You can sync the scripts with upstream changes by pulling and installing again:
+
+```sh
+cd /path/to/strutils
+git pull origin main
+make install
+```
 
 
 ## Usage
