@@ -23,6 +23,7 @@ chr = "strutils.chr:main"
 ord = "strutils.ord:main"
 snippet = "strutils.snippet:main"
 spread = "strutils.spread:main"
+mock = "strutils.mock:main"
 
 [tool.setuptools.dynamic]
 version = {attr = "strutils.__version__"}

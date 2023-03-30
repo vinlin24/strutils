@@ -107,3 +107,27 @@ EXAMPLES:
 
     $ cat body.txt | snippet
     $ ./snippet body.txt --indent 2
+
+
+### mock
+
+Convert an input string into a version with alternative capitalization
+as used in sarcastic texting.
+
+EXAMPLES:
+
+    $ mock hello there
+    hElLo ThErE
+
+    $ echo -e 'hello\tthere\ngeneral\tkenobi' | mock
+    hElLo   ThErE
+    gEnErAl KeNoBi
+
+NOTE: If multiple strings are provided as separate command line
+arguments, they will be subject to the shell parsing  rules. The script
+has no way of knowing the whitespace originally used to separate the
+arguments, so it will assume to join them with single spaces.  To
+preserve whitespace, use quoting.
+
+NOTE: This is a Python port of my original mock.c program, which can be
+found in the commit history of my startup-config repository.
