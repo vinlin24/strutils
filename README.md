@@ -47,11 +47,11 @@ well as the option of including their respective prefixes (0x, 0o, 0b).
 EXAMPLES:
 
     $ ord -x "hello there"
-    68 65 6c 6c 6f 20 74 68 65 72 65
+    68 65 6c 6c 6f 74 68 65 72 65
 
-    $ echo -e "hello\nthere\n" | ord -ep
-    h   e   l   l   o   \n  t   h   e   r   e   \n  \n
-    104 101 108 108 111 010 116 104 101 114 101 010 010
+    $ echo -e "hello\nthere" | ord -ep
+    h   e   l   l   o   \n  t   h   e   r   e   \n
+    104 101 108 108 111 010 116 104 101 114 101 010
 
     $ ord lmao -1 | awk 'BEGIN {s=0} {s += $1} END {print s}'
     425
@@ -121,7 +121,7 @@ EXAMPLES:
 
 ### mock
 
-Convert an input string into a version with alternative capitalization
+Convert an input string into a version with alternating capitalization
 as used in sarcastic texting.
 
 EXAMPLES:
@@ -134,7 +134,7 @@ EXAMPLES:
     gEnErAl KeNoBi
 
 NOTE: If multiple strings are provided as separate command line
-arguments, they will be subject to the shell parsing  rules. The script
+arguments, they will be subject to the shell parsing rules.  The script
 has no way of knowing the whitespace originally used to separate the
 arguments, so it will assume to join them with single spaces.  To
 preserve whitespace, use quoting.

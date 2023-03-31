@@ -1,5 +1,5 @@
 r"""
-Convert an input string into a version with alternative capitalization
+Convert an input string into a version with alternating capitalization
 as used in sarcastic texting.
 
 EXAMPLES:
@@ -12,7 +12,7 @@ EXAMPLES:
     gEnErAl KeNoBi
 
 NOTE: If multiple strings are provided as separate command line
-arguments, they will be subject to the shell parsing  rules. The script
+arguments, they will be subject to the shell parsing rules.  The script
 has no way of knowing the whitespace originally used to separate the
 arguments, so it will assume to join them with single spaces.  To
 preserve whitespace, use quoting.

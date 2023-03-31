@@ -8,11 +8,11 @@ well as the option of including their respective prefixes (0x, 0o, 0b).
 EXAMPLES:
 
     $ ord -x "hello there"
-    68 65 6c 6c 6f 20 74 68 65 72 65
+    68 65 6c 6c 6f 74 68 65 72 65
 
-    $ echo -e "hello\nthere\n" | ord -ep
-    h   e   l   l   o   \n  t   h   e   r   e   \n  \n
-    104 101 108 108 111 010 116 104 101 114 101 010 010
+    $ echo -e "hello\nthere" | ord -ep
+    h   e   l   l   o   \n  t   h   e   r   e   \n
+    104 101 108 108 111 010 116 104 101 114 101 010
 
     $ ord lmao -1 | awk 'BEGIN {s=0} {s += $1} END {print s}'
     425
