@@ -115,8 +115,27 @@ can be pasted into the "body" field of a VS Code snippets file.
 
 EXAMPLES:
 
-    $ cat body.txt | snippet
-    $ ./snippet body.txt --indent 2
+    $ snippet
+    #!/usr/bin/env ${1:python3}
+    # -*- coding: utf-8 -*-
+    $0
+    ^D
+    [
+        "#!/usr/bin/env ${1:python3}",
+        "# -*- coding: utf-8 -*-",
+        "$0"
+    ]
+
+    $ ./snippet header.txt --indent 2
+    [
+      "#!/usr/bin/env ${1:python3}",
+      "# -*- coding: utf-8 -*-",
+      "\"\"\"${TM_FILENAME}",
+      "",
+      "${2:_description_}",
+      "\"\"\"",
+      "$0"
+    ]
 
 
 ### mock
