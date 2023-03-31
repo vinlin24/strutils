@@ -3,11 +3,11 @@ default:
 
 PHONY: install
 install:
-	unset PIP_REQUIRE_VIRTUALENV && pip install .
+	deactivate; unset PIP_REQUIRE_VIRTUALENV && pip install .
 
 PHONY: editable
 editable:
-	unset PIP_REQUIRE_VIRTUALENV && pip install -e .
+	deactivate; unset PIP_REQUIRE_VIRTUALENV && pip install -e .
 
 .PHONY: readme
 readme:
