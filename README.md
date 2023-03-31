@@ -126,8 +126,9 @@ EXAMPLES:
         "$0"
     ]
 
-    $ ./snippet header.txt --indent 2
-    [
+    $ ./snippet header.txt --indent 2 --prefix header
+    "prefix": "header",
+    "body": [
       "#!/usr/bin/env ${1:python3}",
       "# -*- coding: utf-8 -*-",
       "\"\"\"${TM_FILENAME}",
@@ -136,6 +137,9 @@ EXAMPLES:
       "\"\"\"",
       "$0"
     ]
+
+NOTE: You can pipe the output of this script into a command like clip to
+automatically save it to your clipboard.
 
 
 ### mock
