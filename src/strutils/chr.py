@@ -49,6 +49,17 @@ sep_group.add_argument("-1", dest="one_per_line", action="store_true",
                        help="print each entry on its own line")
 
 
+radix_group = parser.add_mutually_exclusive_group()
+
+radix_group.add_argument("-x", "-h", "--hexadecimal", "--hex",
+                         action="store_true",
+                         help="interpret code points as hexadecimal")
+radix_group.add_argument("-o", "--octal", "--oct", action="store_true",
+                         help="interpret code points as octal")
+radix_group.add_argument("-b", "--binary", "--bin", action="store_true",
+                         help="interpret code points as binary")
+
+
 def validate_int(value: str, *, base: int | None = None) -> int:
     """
     Validator for a non-negative integer input, possibly of varying
@@ -78,9 +89,10 @@ def validate_int(value: str, *, base: int | None = None) -> int:
     return as_int
 
 
-def codes_from_stdin() -> list[int]:
+def codes_from_stdin(*, base: int | None = None) -> list[int]:
     try:
-        return [validate_int(token) for token in sys.stdin.read().split()
+        return [validate_int(token, base=base)
+                for token in sys.stdin.read().split()
                 if token and not token.isspace()]
     except (ValueError, ArgumentTypeError) as error:
         invalid_token = error.args[0].split()[-1]
@@ -106,9 +118,23 @@ def main() -> None:
     """Main driver function."""
     namespace = parser.parse_args()
 
-    codes: list[int] = [validate_int(code) for code in namespace.codes]
+    hexadecimal: bool = namespace.hexadecimal
+    octal: bool = namespace.octal
+    binary: bool = namespace.binary
+
+    if hexadecimal:
+        base = 16
+    elif octal:
+        base = 8
+    elif binary:
+        base = 2
+    else:
+        base = None
+
+    codes: list[int] = [validate_int(code, base=base)
+                        for code in namespace.codes]
     if not codes:
-        codes = codes_from_stdin()
+        codes = codes_from_stdin(base=base)
 
     echo: bool = namespace.echo
 
