@@ -22,13 +22,15 @@ not yet work as intended.
 """
 
 import sys
-from argparse import (SUPPRESS, ArgumentParser, ArgumentTypeError,
-                      RawTextHelpFormatter)
+from argparse import SUPPRESS, ArgumentParser, RawTextHelpFormatter
 from pathlib import Path
+from typing import NoReturn
 
 __author__ = "Vincent Lin"
 
-parser = ArgumentParser(prog=Path(sys.argv[0]).name,
+PROG = Path(sys.argv[0]).name
+
+parser = ArgumentParser(prog=PROG,
                         description=__doc__,
                         formatter_class=RawTextHelpFormatter,
                         add_help=False)
@@ -60,6 +62,11 @@ radix_group.add_argument("-b", "--binary", "--bin", action="store_true",
                          help="interpret code points as binary")
 
 
+def exit_with_message(message: str, *, code: int = 0) -> NoReturn:
+    sys.stderr.write(f"{PROG}: {message}\n")
+    sys.exit(code)
+
+
 def validate_int(value: str, *, base: int | None = None) -> int:
     """
     Validator for a non-negative integer input, possibly of varying
@@ -67,36 +74,37 @@ def validate_int(value: str, *, base: int | None = None) -> int:
     provided, interpret value with that base regardless of prefix.
     """
     if value.startswith("-"):
-        raise ArgumentTypeError(f"{value} is negative or not an int.")
+        exit_with_message(f"{value} is negative or not an int.", code=22)
+
+    def cast_int(string: str, base: int) -> int:
+        try:
+            return int(string, base)
+        except ValueError:
+            exit_with_message(f"{value} could not be interpreted as "
+                              f"an integer with base {base}.",
+                              code=22)
 
     if base is not None:
         value = value.lstrip("0xob")
-        as_int = int(value, base)
-        return as_int
+        return cast_int(value, base)
 
     if value.startswith("0x"):
-        as_int = int(value, 16)
+        return cast_int(value, 16)
     # Second condition is to support C-style octal numbers e.g. 0755.
-    elif value.startswith("0o") or \
+    if value.startswith("0o") or \
             value.startswith("0") and value[1:].isnumeric():
         stripped = value.removeprefix("0").removeprefix("o")
-        as_int = int(stripped, 8)
-    elif value.startswith("0b"):
-        as_int = int(value, 2)
-    else:
-        as_int = int(value)
+        return cast_int(stripped, 8)
+    if value.startswith("0b"):
+        return cast_int(value, 2)
 
-    return as_int
+    return cast_int(value, 10)
 
 
 def codes_from_stdin(*, base: int | None = None) -> list[int]:
-    try:
-        return [validate_int(token, base=base)
-                for token in sys.stdin.read().split()
-                if token and not token.isspace()]
-    except (ValueError, ArgumentTypeError) as error:
-        invalid_token = error.args[0].split()[-1]
-        parser.error(f"invalid validate_int value: {invalid_token}")
+    return [validate_int(token, base=base)
+            for token in sys.stdin.read().split()
+            if token and not token.isspace()]
 
 
 def escaped(ch: str) -> str:
