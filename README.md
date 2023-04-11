@@ -65,8 +65,8 @@ whitespace in your shell script.
 ### chr
 
 Apply Python's chr() on all the input numbers, with support for
-different bases, such as hexadecimal, octal, and binary, through the use
-of their respective prefixes (0x, 0o/0, 0b).
+different bases, such as hexadecimal, octal, and binary, by inferring
+from their respective prefixes (0x, 0o/0, 0b) or with a flag.
 
 EXAMPLES:
 
