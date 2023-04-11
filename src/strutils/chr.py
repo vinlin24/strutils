@@ -27,14 +27,37 @@ from pathlib import Path
 
 __author__ = "Vincent Lin"
 
+parser = ArgumentParser(prog=Path(sys.argv[0]).name,
+                        description=__doc__,
+                        formatter_class=RawTextHelpFormatter)
 
-def validate_int(value: str) -> int:
+parser.add_argument("codes", metavar="CODE", nargs="*",
+                    help="numbers to interpret as Unicode codepoints")
+
+parser.add_argument("-e", "--echo", action="store_true",
+                    help="print the original code points alongside")
+
+sep_group = parser.add_mutually_exclusive_group()
+
+sep_group.add_argument("-d", "--delimiter", metavar="DELIM", default=" ",
+                       help="string to use between each character")
+sep_group.add_argument("-1", dest="one_per_line", action="store_true",
+                       help="print each entry on its own line")
+
+
+def validate_int(value: str, *, base: int | None = None) -> int:
     """
     Validator for a non-negative integer input, possibly of varying
-    radixes as denoted by their conventional prefix.
+    radixes as denoted by their conventional prefix.  If base is
+    provided, interpret value with that base regardless of prefix.
     """
     if value.startswith("-"):
         raise ArgumentTypeError(f"{value} is negative or not an int.")
+
+    if base is not None:
+        value = value.lstrip("0xob")
+        as_int = int(value, base)
+        return as_int
 
     if value.startswith("0x"):
         as_int = int(value, 16)
@@ -49,24 +72,6 @@ def validate_int(value: str) -> int:
         as_int = int(value)
 
     return as_int
-
-
-parser = ArgumentParser(prog=Path(sys.argv[0]).name,
-                        description=__doc__,
-                        formatter_class=RawTextHelpFormatter)
-
-parser.add_argument("codes", metavar="CODE", nargs="*", type=validate_int,
-                    help="numbers to interpret as Unicode codepoints")
-
-parser.add_argument("-e", "--echo", action="store_true",
-                    help="print the original code points alongside")
-
-sep_group = parser.add_mutually_exclusive_group()
-
-sep_group.add_argument("-d", "--delimiter", metavar="DELIM", default=" ",
-                       help="string to use between each character")
-sep_group.add_argument("-1", dest="one_per_line", action="store_true",
-                       help="print each entry on its own line")
 
 
 def codes_from_stdin() -> list[int]:
@@ -97,7 +102,7 @@ def main() -> None:
     """Main driver function."""
     namespace = parser.parse_args()
 
-    codes: list[int] = namespace.codes
+    codes: list[int] = [validate_int(code) for code in namespace.codes]
     if not codes:
         codes = codes_from_stdin()
 
