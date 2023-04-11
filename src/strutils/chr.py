@@ -22,14 +22,18 @@ not yet work as intended.
 """
 
 import sys
-from argparse import ArgumentParser, ArgumentTypeError, RawTextHelpFormatter
+from argparse import (SUPPRESS, ArgumentParser, ArgumentTypeError,
+                      RawTextHelpFormatter)
 from pathlib import Path
 
 __author__ = "Vincent Lin"
 
 parser = ArgumentParser(prog=Path(sys.argv[0]).name,
                         description=__doc__,
-                        formatter_class=RawTextHelpFormatter)
+                        formatter_class=RawTextHelpFormatter,
+                        add_help=False)
+parser.add_argument("--help", action="help", default=SUPPRESS,
+                    help="show this message and exit")
 
 parser.add_argument("codes", metavar="CODE", nargs="*",
                     help="numbers to interpret as Unicode codepoints")
