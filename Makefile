@@ -15,6 +15,5 @@ readme:
 
 .PHONY: clean
 clean:
-	-find . -maxdepth 1 -type d -name __pycache__ -exec rm -rf {} +
-	-find src -type d -name __pycache__ -o -name "*.egg-info" \
-		-exec rm -rf {} +
+	-find . -type d -name __pycache__ -exec rm -rf {} +
+	-find src -type d -name "*.egg-info" -exec rm -rf {} +
