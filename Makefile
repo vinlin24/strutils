@@ -13,6 +13,10 @@ editable:
 readme:
 	./update_readme.py
 
+.PHONY: test
+test:
+	cd test && python -m unittest
+
 .PHONY: clean
 clean:
 	-find . -type d -name __pycache__ -exec rm -rf {} +
