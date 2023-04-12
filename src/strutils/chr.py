@@ -164,7 +164,7 @@ def main() -> None:
     def format_chr(code: int) -> str:
         try:
             return escaped(chr(code).ljust(max_width))
-        # chr() can raise if arg is not in rage(0x110000).
+        # chr() can raise if arg is not in range(0x110000).
         except ValueError as error:
             msg = f"could not get the character of code point {code}: {error}"
             exit_with_message(msg, code=22)

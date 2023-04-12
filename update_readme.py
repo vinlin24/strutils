@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """update_readme.py
 
-Extract the docstring from each script to use in the README.entry for
+Extract the docstring from each script to use in the README entry for
 that script.  Intended for use in development.
 
 USAGE: ./update_readme.py
@@ -51,6 +51,7 @@ def write_usage_section(script_name: str, script_usage: str) -> None:
         readme.write(body)
 
 
+# A separate I/O because I don't want to think so much.
 def ensure_one_trailing_newline() -> None:
     with README_PATH.open("rt+", encoding="utf-8") as readme:
         content = readme.read()
