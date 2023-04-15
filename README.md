@@ -47,7 +47,7 @@ well as the option of including their respective prefixes (0x, 0o, 0b).
 EXAMPLES:
 
     $ ord -x "hello there"
-    68 65 6c 6c 6f 74 68 65 72 65
+    68 65 6c 6c 6f 20 74 68 65 72 65
 
     $ echo -e "hello\nthere" | ord -ep
     h   e   l   l   o   \n  t   h   e   r   e   \n
