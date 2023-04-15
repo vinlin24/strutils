@@ -5,15 +5,9 @@
 Unit tester for the chr program.
 """
 
-import subprocess
 import unittest
 
-
-def get_output(script: str) -> str:
-    stdout = subprocess.check_output(script, shell=True)
-    as_str = stdout.decode()
-    normalized = as_str.replace("\r\n", "\n")
-    return normalized
+from common import get_output
 
 
 class TestChr(unittest.TestCase):
