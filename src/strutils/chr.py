@@ -49,7 +49,9 @@ sep_group.add_argument("-d", "--delimiter", metavar="DELIM", default=" ",
                        help="string to use between each character")
 sep_group.add_argument("-1", dest="one_per_line", action="store_true",
                        help="print each entry on its own line")
-
+sep_group.add_argument("-p", "--print", dest="print_as_is",
+                       action="store_true",
+                       help="decode and print characters as they are")
 
 radix_group = parser.add_mutually_exclusive_group()
 
@@ -145,6 +147,17 @@ def main() -> None:
         codes = codes_from_stdin(base=base)
 
     echo: bool = namespace.echo
+    print_as_is: bool = namespace.print_as_is
+
+    # Ignore echo, doesn't make sense to use it with --print.
+    if echo and print_as_is:
+        sys.stderr.write("WARNING: Ignoring --echo since --print was used.\n")
+    # The simplest case, where we literally decode all the characters
+    # and print them side-by-side. Useful when you're decoding a message
+    # and just want to see the content as it was originally written.
+    if print_as_is:
+        print("".join(chr(code) for code in codes), end="")
+        return
 
     delimiter: str = namespace.delimiter
 
