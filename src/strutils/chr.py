@@ -156,7 +156,7 @@ def main() -> None:
     # and print them side-by-side. Useful when you're decoding a message
     # and just want to see the content as it was originally written.
     if print_as_is:
-        print("".join(chr(code) for code in codes), end="")
+        print("".join(chr(code) for code in codes))
         return
 
     delimiter: str = namespace.delimiter
