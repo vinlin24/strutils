@@ -4,27 +4,24 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "strutils"
-authors = [
-    {name = "Vincent Lin", email = "vinlin24@outlook.com"},
-]
+authors = [{ name = "Vincent Lin", email = "vinlin24@outlook.com" }]
 description = "Unix-like interfaces to Python string manipulation utilities"
 readme = "README.md"
-license = {file = "LICENSE"}
+license = { file = "LICENSE" }
 requires-python = ">=3.10"
 keywords = ["string", "cli"]
-classifiers = [
-    "Programming Language :: Python :: 3",
-]
+classifiers = ["Programming Language :: Python :: 3"]
 dependencies = []
 dynamic = ["version"]
 
 [project.scripts]
 chr = "strutils.chr:main"
+decode = "strutils.chr:main"      # Alias.
 ord = "strutils.ord:main"
+encode = "strutils.ord:main"      # Alias.
 snippet = "strutils.snippet:main"
 spread = "strutils.spread:main"
 mock = "strutils.mock:main"
 
 [tool.setuptools.dynamic]
-version = {attr = "strutils.__version__"}
-
+version = { attr = "strutils.__version__" }
