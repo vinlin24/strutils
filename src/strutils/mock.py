@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 r"""
 Convert an input string into a version with alternating capitalization
 as used in sarcastic texting.
@@ -48,6 +50,7 @@ def main() -> None:
         from_stdin = True
 
     toggle_flag = False
+
     def mock_token(token: str) -> str:
         nonlocal toggle_flag
         result = io.StringIO()

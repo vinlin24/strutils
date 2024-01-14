@@ -22,6 +22,7 @@ encode = "strutils.ord:main"      # Alias.
 snippet = "strutils.snippet:main"
 spread = "strutils.spread:main"
 mock = "strutils.mock:main"
+len = "strutils.len:main"
 
 [tool.setuptools.dynamic]
 version = { attr = "strutils.__version__" }

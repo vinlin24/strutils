@@ -164,3 +164,31 @@ preserve whitespace, use quoting.
 
 NOTE: This is a Python port of my original mock.c program, which can be
 found in the commit history of my startup-config repository.
+
+
+### len
+
+Compute the length of each string. For most purposes, just saves a few
+keystrokes from the more versatile `echo -n "$string" | wc` pattern, but
+also serves as a way to apply the counting on EACH input token.
+
+EXAMPLES:
+
+    $ len "hello there"
+    11
+
+    $ len general kenobi you are a bold one
+    7 6 3 3 1 4 3
+
+    $ len -1 -- separate lines please
+    8
+    5
+    6
+
+    $ len -t -- there are 5 tokens here
+    5
+
+NOTE: "Tokens" are determined by how the shell running this script
+parses the input at the command line. If you intend a string with
+whitespace to be parsed as one token, be sure to follow your shell's
+quoting rules. Reading from stdin always treats the string as one token.
