@@ -7,7 +7,10 @@ as used in sarcastic texting.
 EXAMPLES:
 
     $ mock hello there
-    hElLo ThErE
+    HeLlO tHeRe
+
+    $ mock -c hello there
+    HeLlO ThErE
 
     $ echo -e 'hello\tthere\ngeneral\tkenobi' | mock
     hElLo   ThErE
@@ -33,8 +36,20 @@ __author__ = "Vincent Lin"
 parser = ArgumentParser(prog=Path(sys.argv[0]).name,
                         description=__doc__,
                         formatter_class=RawTextHelpFormatter)
-parser.add_argument("strings", metavar="STRING", nargs="*",
-                    help="text to mock; read from stdin if omitted")
+
+parser.add_argument(
+    "strings",
+    metavar="STRING",
+    nargs="*",
+    help="text to mock; read from stdin if omitted",
+)
+
+parser.add_argument(
+    "-c", "--caps-first",
+    dest="caps_first",
+    action="store_true",
+    help="start with a uppercase instead of lowercase before alternating",
+)
 
 
 def toggle_case(char: str) -> str:
@@ -42,14 +57,17 @@ def toggle_case(char: str) -> str:
 
 
 def main() -> None:
-    namespace = parser.parse_args()
-    strings: list[str] = namespace.strings
+    args = parser.parse_args()
+
+    strings: list[str] = args.strings
+    caps_first: bool = args.caps_first
+
     from_stdin = False
     if not strings:
         strings = [sys.stdin.read()]
         from_stdin = True
 
-    toggle_flag = False
+    toggle_flag = caps_first
 
     def mock_token(token: str) -> str:
         nonlocal toggle_flag

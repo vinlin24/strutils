@@ -150,7 +150,10 @@ as used in sarcastic texting.
 EXAMPLES:
 
     $ mock hello there
-    hElLo ThErE
+    HeLlO tHeRe
+
+    $ mock -c hello there
+    HeLlO ThErE
 
     $ echo -e 'hello\tthere\ngeneral\tkenobi' | mock
     hElLo   ThErE
