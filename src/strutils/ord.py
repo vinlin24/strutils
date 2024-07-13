@@ -144,7 +144,7 @@ def escaped(ch: str) -> str:
     safe = repr(ch).strip("'\"")
     if safe == " ":
         return "SPC"  # So it doesn't break external parsers, prolly.
-    return repr(ch).strip("'\"")
+    return safe
 
 
 def print_one_per_line(string: str, echo: bool,
