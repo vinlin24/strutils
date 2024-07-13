@@ -124,6 +124,28 @@ def escaped(ch: str) -> str:
     return repr(ch).strip("'\"")
 
 
+def print_one_per_line(
+    codes_in_decimal: list[int],
+    codes_as_strings: list[str],
+    echo: bool,
+) -> None:
+    """Handle the case where each result goes on a separate line."""
+    if echo:
+        max_width = max(len(code) for code in codes_as_strings)
+        width = max(len(str(code)) for code in codes_in_decimal)
+
+        def format_line(code: int, string: str) -> str:
+            return f"{string.ljust(max_width)} {chr(code).ljust(width)}"
+    else:
+        def format_line(code: int, string: str) -> str:
+            del code
+            return string
+
+    lines = "\n".join(format_line(code, string) for code, string
+                      in zip(codes_in_decimal, codes_as_strings))
+    print(lines)
+
+
 def main() -> None:
     """Main driver function."""
     namespace = parser.parse_args()
@@ -141,10 +163,11 @@ def main() -> None:
     else:
         base = None
 
-    codes: list[int] = [validate_int(code, base=base)
-                        for code in namespace.codes]
-    if not codes:
-        codes = codes_from_stdin(base=base)
+    codes_as_strings: list[str] = namespace.codes
+    codes_in_decimal: list[int] = [validate_int(code, base=base)
+                                   for code in namespace.codes]
+    if not codes_in_decimal:
+        codes_in_decimal = codes_from_stdin(base=base)
 
     echo: bool = namespace.echo
     print_as_is: bool = namespace.print_as_is
@@ -156,21 +179,21 @@ def main() -> None:
     # and print them side-by-side. Useful when you're decoding a message
     # and just want to see the content as it was originally written.
     if print_as_is:
-        print("".join(chr(code) for code in codes))
+        print("".join(chr(code) for code in codes_in_decimal))
         return
 
     delimiter: str = namespace.delimiter
 
     one_per_line: bool = namespace.one_per_line
-    # TEMP: Will have to handle this differently like in ord when we
-    # implement echoing.
     if one_per_line:
-        delimiter = "\n"
+        print_one_per_line(codes_in_decimal, codes_as_strings, echo)
+        return
 
-    max_width = max(len(str(code)) for code in codes) if echo else 0
+    max_width = max(len(str(code)) for code in codes_in_decimal) if echo else 0
 
     if echo:
-        echoed = delimiter.join(str(code).ljust(max_width) for code in codes)
+        echoed = delimiter.join(str(code).ljust(max_width)
+                                for code in codes_in_decimal)
         print(echoed)
 
     # Actual chr() logic lol.
@@ -182,7 +205,7 @@ def main() -> None:
             msg = f"could not get the character of code point {code}: {error}"
             exit_with_message(msg, code=22)
 
-    output = delimiter.join(format_chr(code) for code in codes)
+    output = delimiter.join(format_chr(code) for code in codes_in_decimal)
 
     print(output)
 
