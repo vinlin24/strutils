@@ -42,6 +42,8 @@ parser.add_argument("codes", metavar="CODE", nargs="*",
 
 parser.add_argument("-e", "--echo", action="store_true",
                     help="print the original code points alongside")
+parser.add_argument("-s", "--literal-spaces", action="store_true",
+                    help="print space characters as spaces instead of SPC")
 
 sep_group = parser.add_mutually_exclusive_group()
 
@@ -109,7 +111,7 @@ def codes_from_stdin(*, base: int | None = None) -> list[int]:
             if token and not token.isspace()]
 
 
-def escaped(ch: str) -> str:
+def escaped(ch: str, literal_spaces: bool) -> str:
     r"""
     Return a string representation that can be safely printed without
     messing up formatting.
@@ -119,8 +121,8 @@ def escaped(ch: str) -> str:
     \x1e.
     """
     safe = repr(ch).strip("'\"")
-    if safe == " ":
-        return "SPC"  # TODO: What if they want the actual space?
+    if safe == " " and not literal_spaces:
+        return "SPC"
     return repr(ch).strip("'\"")
 
 
@@ -196,10 +198,12 @@ def main() -> None:
                                 for code in codes_in_decimal)
         print(echoed)
 
+    literal_spaces: bool = namespace.literal_spaces
+
     # Actual chr() logic lol.
     def format_chr(code: int) -> str:
         try:
-            return escaped(chr(code).ljust(max_width))
+            return escaped(chr(code).ljust(max_width), literal_spaces)
         # chr() can raise if arg is not in range(0x110000).
         except ValueError as error:
             msg = f"could not get the character of code point {code}: {error}"
