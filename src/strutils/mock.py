@@ -21,9 +21,6 @@ arguments, they will be subject to the shell parsing rules.  The script
 has no way of knowing the whitespace originally used to separate the
 arguments, so it will assume to join them with single spaces.  To
 preserve whitespace, use quoting.
-
-NOTE: This is a Python port of my original mock.c program, which can be
-found in the commit history of my startup-config repository.
 """
 
 import io
