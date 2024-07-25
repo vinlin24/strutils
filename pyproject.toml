@@ -24,6 +24,7 @@ spread = "strutils.spread:main"
 mock = "strutils.mock:main"
 len = "strutils.len:main"
 upper = "strutils.upper:main"
+lower = "strutils.lower:main"
 
 [tool.setuptools.dynamic]
 version = { attr = "strutils.__version__" }

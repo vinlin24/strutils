@@ -219,3 +219,22 @@ strings with a single space joining them. Use quoting to preserve
 whitespace in your shell script. The determining of WORDs when using
 title case is done WITHIN each input STRING. That is, the single token
 "hello there" will still be treated as two WORDs.
+
+
+### lower
+
+Apply Python's str.lower() on the input strings.
+
+EXAMPLES:
+
+    $ lower -n 'HELLO THERE'
+    hello there
+
+    $ echo -e " HELLO\n    thERe" | lower
+     hello
+         there
+
+NOTE: If you supply multiple strings as a whitespace-separated list at
+the command line, it will be interpreted as the concatenation of the
+strings with a single space joining them. Use quoting to preserve
+whitespace in your shell script.
