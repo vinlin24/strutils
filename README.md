@@ -192,3 +192,30 @@ NOTE: "Tokens" are determined by how the shell running this script
 parses the input at the command line. If you intend a string with
 whitespace to be parsed as one token, be sure to follow your shell's
 quoting rules. Reading from stdin always treats the string as one token.
+
+
+### upper
+
+Apply Python's str.upper() or str.capitalize() on the input words.
+
+EXAMPLES:
+
+    $ upper -n 'hello there'
+    HELLO THERE
+
+    $ echo -e " hello\n    there" | upper -t
+     Hello
+        There
+
+    $ echo 'hello THERE' | upper -tf
+    Hello There
+
+    $ echo 'hello-there-general-kenobi' | upper -td '-'
+    Hello-There-General-Kenobi
+
+NOTE: If you supply multiple strings as a whitespace-separated list at
+the command line, it will be interpreted as the concatenation of the
+strings with a single space joining them. Use quoting to preserve
+whitespace in your shell script. The determining of WORDs when using
+title case is done WITHIN each input STRING. That is, the single token
+"hello there" will still be treated as two WORDs.
