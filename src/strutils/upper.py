@@ -28,6 +28,7 @@ title case is done WITHIN each input STRING. That is, the single token
 
 import argparse
 import io
+import string
 import sys
 
 parser = argparse.ArgumentParser(
@@ -70,7 +71,7 @@ parser.add_argument(
 
 
 def transform_to_title_case(
-    string: str, *,
+    token: str, *,
     delimiter: str | None = None,
     force: bool = False,
 ) -> str:
@@ -84,7 +85,7 @@ def transform_to_title_case(
         # treat the start as whitespace state to capture the case of
         # start -> word transition requiring capitalization.
         at_whitespace = True
-        for char in string:
+        for char in token:
             # whitespace | word -> whitespace.
             if char.isspace():
                 result.write(char)
@@ -100,10 +101,10 @@ def transform_to_title_case(
 
         return result.getvalue()
 
-    # Otherwise, we can just cheese it with str.split() and str.join().
-    words = string.split(delimiter)
+    # Otherwise, we can just cheese it with existing string functions.
     if force:
-        return delimiter.join(word.capitalize() for word in words)
+        return string.capwords(token, sep=delimiter)
+    words = token.split(delimiter)
     return delimiter.join(word[:1].upper() + word[1:] for word in words)
 
 
@@ -122,13 +123,13 @@ def main() -> None:
     if use_title_case:
         transformed = (
             transform_to_title_case(
-                string,
+                token,
                 delimiter=delimiter,
                 force=force_title_case,
-            ) for string in strings
+            ) for token in strings
         )
     else:
-        transformed = (string.upper() for string in strings)
+        transformed = (token.upper() for token in strings)
 
     print(*transformed, end=("\n" if use_trailing_newline else ""))
 
