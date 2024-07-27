@@ -25,6 +25,7 @@ mock = "strutils.mock:main"
 len = "strutils.len:main"
 upper = "strutils.upper:main"
 lower = "strutils.lower:main"
+randstr = "strutils.randstr:main"
 
 [tool.setuptools.dynamic]
 version = { attr = "strutils.__version__" }

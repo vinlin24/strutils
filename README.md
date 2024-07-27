@@ -238,3 +238,103 @@ NOTE: If you supply multiple strings as a whitespace-separated list at
 the command line, it will be interpreted as the concatenation of the
 strings with a single space joining them. Use quoting to preserve
 whitespace in your shell script.
+
+
+### randstr
+
+Generate strings of random characters of fixed or random length.
+
+There are three `SOURCE`s of characters to make up the final weighted
+`ALPHABET` from which the `STRING` is generated:
+
+    1. `LITERALS` supplied to the `-a`/`--alphabet` option.
+    2. Text `FILE`s supplied to the `-f`/`--file` option. Binary files
+       are currently not supported.
+    3. Character class `FLAG`s supplied to the `-c`/`--classes` option.
+
+The resolution from `SOURCE`s to `ALPHABET` is as follows:
+
+    1. Each `SOURCE` resolves to its own weighted `CHARSET`. The command
+       line option for each `SOURCE` can also be repeated an arbitrary
+       number of times. The characters and their counts from each option
+       instance are simply combined before resolving.
+    2. The three `CHARSET`s are then combined to create the final
+       weighted `ALPHABET`. This means that the counts (weights) of
+       shared characters across `CHARSET`s are added.
+
+The final `STRING` is then chosen as a random combination of this
+`ALPHABET` (with or without replacement depending on `-u`/`--unique`).
+
+NOTE: Regarding resolution within each `CHARSET`:
+
+    - All characters within `LITERALS` as well as characters read from
+      `FILE`s contribute a count of 1 for their character in the
+      `CHARSET`. Repeated characters are weighted accordingly.
+    - Character class `FLAG`s are "merged" before creating its
+      `CHARSET`. That is, overlapping `FLAG`s will not contribute
+      duplicate counts of the represented characters. For example, `AL`
+      is equivalent to `A` as `A` is a superset of `L`. It follows that
+      repetitions have no effect e.g. `DDD` is equivalent to `D`. In
+      other words, the UNION of the flags' character sets are used.
+
+EXAMPLES:
+
+    Generate a string of 42 random characters (followed by a newline,
+    for display purposes)::
+
+        $ randstr -n 42
+        Cm1xiz2QFmy6jlsuBvH6TIQPQ8zDhz2pWf5BRTVXkP
+
+    Permuting the 10 digit characters using the "digits" character class
+    and the "unique" option::
+
+        $ randstr -n 10 -u -c D
+        9832607541
+
+    Alphabets are weighted based on the counts of characters provided.
+    Note the relative ratio between a, b, c::
+
+        $ randstr -n 15 -a 'abbccc'
+        cbbcbbccccbcacb
+
+    Using characters within a text file as the alphabet source::
+
+        $ randstr -n 10 -f Makefile
+        -aiOca a_V
+
+    Combining "ASCII uppercase" and "digits" character classes as well
+    as the literal "!" character to draw from::
+
+        $ randstr 30 -c UD -a '!'
+        C4R1N58V4G!0N52!3ZTWJTWB0BCOIL
+
+    Using range syntax for random length (seed set for determinism)::
+
+        $ randstr 10-20 -s 456789252 | wc -c
+        17
+
+    Repeating the same character 30 times::
+
+        $ randstr 30 -na E
+        EEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+
+    Repeating the same character a random number of times::
+
+        $ randstr 5-40 -na E
+        EEEEEEEEEEEE
+
+REFERENCE:
+
+    The supported character class `FLAG`s are listed below. They have a
+    one-to-one mapping to the constants defined in the Python `string`
+    standard library.
+
+        - S : whitespace
+        - L : ASCII lowercase
+        - U : ASCII uppercase
+        - A : ASCII letters (equivalent to L + U)
+        - D : digits
+        - H : hexadecimal digits
+        - O : octal digits
+        - P : punctuation
+        - * : printable (equivalent to D + A + P + S)
