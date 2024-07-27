@@ -13,19 +13,28 @@ import re
 import sys
 from pathlib import Path
 from types import ModuleType
+from typing import Final
 
 __author__ = "Vincent Lin"
 
-PACKAGE_PATH = Path(__file__).parent / "src" / "strutils"
-README_PATH = Path(__file__).parent / "README.md"
+PACKAGE_PATH: Final = Path(__file__).parent / "src" / "strutils"
+README_PATH: Final = Path(__file__).parent / "README.md"
 
 
 def import_script(script_path: Path) -> ModuleType:
     script_stem = script_path.stem
-    spec = importlib.util.spec_from_file_location(script_stem, script_path)
-    module = importlib.util.module_from_spec(spec)  # type: ignore
+    package_name = PACKAGE_PATH.name
+    module_name = f"{package_name}.{script_stem}"
+
+    spec = importlib.util.spec_from_file_location(module_name, script_path)
+    assert spec is not None
+
+    module = importlib.util.module_from_spec(spec)
     sys.modules[script_stem] = module
-    spec.loader.exec_module(module)  # type: ignore
+    spec.submodule_search_locations = [str(PACKAGE_PATH)]
+
+    assert spec.loader is not None
+    spec.loader.exec_module(module)
     return module
 
 
@@ -65,7 +74,8 @@ def main() -> None:
         if file_path.name.startswith("_") or file_path.is_dir():
             continue
         module = import_script(file_path)
-        script_name = module.__name__
+        # Use instead of `module.__name__` to avoid package prefix.
+        script_name = file_path.stem
         script_usage = module.__doc__ or ""
         write_usage_section(script_name, script_usage)
     ensure_one_trailing_newline()
