@@ -40,7 +40,7 @@ def import_script(script_path: Path) -> ModuleType:
 
 def write_usage_section(script_name: str, script_usage: str) -> None:
     pattern = rf"## Usage[\s\S]+### {script_name}([\s\S]+?)(?:### .+|$)"
-    body = f"\n{script_usage}\n\n"
+    body = f"\n\n{script_usage.strip()}\n\n\n"
     with README_PATH.open("rt+", encoding="utf-8", newline="\n") as readme:
         content = readme.read()
         match = re.search(pattern, content)
