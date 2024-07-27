@@ -41,7 +41,7 @@ def import_script(script_path: Path) -> ModuleType:
 def write_usage_section(script_name: str, script_usage: str) -> None:
     pattern = rf"## Usage[\s\S]+### {script_name}([\s\S]+?)(?:### .+|$)"
     body = f"\n{script_usage}\n\n"
-    with README_PATH.open("rt+", encoding="utf-8") as readme:
+    with README_PATH.open("rt+", encoding="utf-8", newline="\n") as readme:
         content = readme.read()
         match = re.search(pattern, content)
         # Section exists, overwrite it.
@@ -62,7 +62,7 @@ def write_usage_section(script_name: str, script_usage: str) -> None:
 
 # A separate I/O because I don't want to think so much.
 def ensure_one_trailing_newline() -> None:
-    with README_PATH.open("rt+", encoding="utf-8") as readme:
+    with README_PATH.open("rt+", encoding="utf-8", newline="\n") as readme:
         content = readme.read()
         readme.truncate(0)
         readme.seek(0)
