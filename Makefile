@@ -15,10 +15,13 @@ hooks:
 	cp --verbose pre-commit.sh .git/hooks/pre-commit
 
 test:
+	./test.sh --lazy
+
+test-all:
 	./test.sh
 
 clean:
 	-find . -type d -name __pycache__ -exec rm -rf {} +
 	-find src -type d -name "*.egg-info" -exec rm -rf {} +
 
-.PHONY: default install editable readme hooks test clean
+.PHONY: default install editable readme hooks test test-all clean

@@ -55,7 +55,7 @@ make editable
 To run unit tests for all scripts:
 
 ```sh
-make test
+make test-all
 # OR:
 ./test.sh
 ```
@@ -67,10 +67,18 @@ To run unit tests only for a program(s) e.g. `len`, `chr`:
 ./test.sh len chr
 ```
 
-[test.sh](test.sh) has been outfitted with a CLI. Supported options include:
+To run unit tests only for the programs that have been modified since the last
+commit:
 
 ```sh
-./test.sh --verbose
+make test
+# OR:
+./test.sh --lazy
+```
+
+[test.sh](test.sh) has been outfitted with a CLI. To see usage:
+
+```sh
 ./test.sh --help
 ```
 
