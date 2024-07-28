@@ -11,7 +11,7 @@ license = { file = "LICENSE" }
 requires-python = ">=3.10"
 keywords = ["string", "cli"]
 classifiers = ["Programming Language :: Python :: 3"]
-dependencies = []
+dependencies = ["typing_extensions"]
 dynamic = ["version"]
 
 [project.scripts]
