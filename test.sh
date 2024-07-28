@@ -1,7 +1,7 @@
 #!/bin/bash
 # USAGE: ./test.sh [PATTERN]
 
-self="$(basename $0)"
+self="$(basename "$0")"
 script_dir="$(dirname "$0")"
 test_dir="${script_dir}/test"
 pattern="$1"
