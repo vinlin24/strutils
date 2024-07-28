@@ -21,6 +21,10 @@ The resolution from `SOURCE`s to `ALPHABET` is as follows:
 The final `STRING` is then chosen as a random combination of this
 `ALPHABET` (with or without replacement depending on `-u`/`--unique`).
 
+If no `SOURCE` is provided, or they resolve to an empty alphabet, a
+default alphabet of all ASCII letters and digits is used. In other
+words, providing no `SOURCE` equivalent to providing `--classes AD`.
+
 NOTE: Regarding resolution within each `CHARSET`:
 
     - All characters within `LITERALS` as well as characters read from
