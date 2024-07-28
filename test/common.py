@@ -3,9 +3,12 @@
 Code to share among tests.
 """
 
+import contextlib
 import subprocess
 import unittest
-from typing import NamedTuple
+from io import TextIOWrapper
+from pathlib import Path
+from typing import Generator, Mapping, NamedTuple
 
 
 class ProcessResult(NamedTuple):
@@ -20,6 +23,7 @@ class TestBase(unittest.TestCase):
         script: str,
         *,
         stdin: str | None = None,
+        environment: Mapping[str, str] | None = None,
     ) -> ProcessResult:
         process = subprocess.run(
             script,
@@ -27,9 +31,14 @@ class TestBase(unittest.TestCase):
             capture_output=True,
             input=stdin,
             text=True,
+            env=environment,
             check=False,
         )
-        return ProcessResult(process.stdout, process.stderr, process.returncode)
+        return ProcessResult(
+            process.stdout,
+            process.stderr,
+            process.returncode,
+        )
 
     def assert_success(
         self,
@@ -43,3 +52,14 @@ class TestBase(unittest.TestCase):
         self.assertEqual(stdout, expected_stdout)
         if not stderr_ok:
             self.assertEqual(stderr, "")
+
+    @contextlib.contextmanager
+    def temporary_file(self) -> Generator[TextIOWrapper, None, None]:
+        path = Path("temporary_file")
+        path.touch(0o600, exist_ok=True)
+        try:
+            file = path.open("rt+", encoding="utf-8")
+            yield file
+        finally:
+            file.close()
+            path.unlink(missing_ok=True)
