@@ -1,5 +1,4 @@
 #!/bin/bash
-# USAGE: ./test.sh [-v|--verbose] [PROG1] [PROG2] ...
 
 self="$(basename "$0")"
 script_dir="$(dirname "$0")"
@@ -7,14 +6,27 @@ test_dir="${script_dir}/test"
 
 ##### PARSE COMMAND LINE ARGUMENTS #####
 
+usage() {
+    echo "usage: $0 [-v|--verbose] [-h|--help] [PROG1] [PROG2] ..."
+}
+
 POSITIONAL_ARGS=()
 VERBOSE=0
 
 while [ $# -gt 0 ]; do
     case $1 in
+    -h | --help)
+        usage
+        exit 0
+        ;;
     -v | --verbose)
         VERBOSE=1
         shift
+        ;;
+    -*)
+        echo >&2 "$self: invalid option: $1"
+        usage >&2
+        exit 1
         ;;
     *)
         POSITIONAL_ARGS+=("$1")
@@ -25,7 +37,7 @@ done
 
 verbosity_flag=''
 if [ $VERBOSE -eq 1 ]; then
-    verbosity_flag=--verbose
+    verbosity_flag='--verbose'
 fi
 
 ##### TRANSFORM PROGRAM NAMES TO UNITTEST PATTERNS #####
@@ -33,7 +45,7 @@ fi
 get_test_case_pattern_for_prog() {
     local program_to_test="$1" # e.g. "len"
     if [ -z "$program_to_test" ]; then
-        echo >&2 'fatal: function expected to be passed a program name'
+        echo >&2 "$self: fatal: function expected to be passed a program name"
         exit 1
     fi
 

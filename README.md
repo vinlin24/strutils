@@ -57,13 +57,21 @@ To run unit tests for all scripts:
 ```sh
 make test
 # OR:
-./tests.sh
+./test.sh
 ```
 
-To run unit tests only for scripts whose names match a certain `STRING`:
+To run unit tests only for a program(s) e.g. `len`, `chr`:
 
 ```sh
-./tests.sh STRING
+./test.sh len
+./test.sh len chr
+```
+
+[test.sh](test.sh) has been outfitted with a CLI. Supported options include:
+
+```sh
+./test.sh --verbose
+./test.sh --help
 ```
 
 
