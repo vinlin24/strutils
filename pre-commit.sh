@@ -4,6 +4,12 @@
 repo_root="$(git rev-parse --show-toplevel)"
 cd "$repo_root" || exit 1
 
+# (1) Ensure tests are passing.
+
+make test
+
+# (2) Ensure documentation is up to date.
+
 make_output="$(make readme)"
 make_status=$?
 echo "$make_output"
