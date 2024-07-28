@@ -63,15 +63,15 @@ get_changed_progs() {
     done
 }
 
-src_common_code_unchanged() {
+src_common_code_changed() {
     changed_sources=$(
         git diff --name-only HEAD -- src/strutils/common/*.py &&
             git ls-files --others --exclude-standard src/strutils/common/*.py
     )
     if [ -z "$changed_sources" ]; then
-        return 0
+        return 1
     fi
-    return 1
+    return 0
 }
 
 get_test_case_pattern_for_prog() {
@@ -109,10 +109,12 @@ fi
 
 ##### INVOKE UNITTEST #####
 
-if [ $RUN_AS_NEEDED -eq 1 ] &&
-    [ ${#test_names_to_run[@]} -eq 0 ] &&
-    src_common_code_unchanged; then
-
+# If there was a change
+if src_common_code_changed; then
+    echo "$self: warning: common source code changed, will run all tests"
+    test_names_to_run=()
+    test_case_pattern_tokens=()
+elif [ $RUN_AS_NEEDED -eq 1 ] && [ ${#test_names_to_run[@]} -eq 0 ]; then
     echo "$self: no scripts have changed since last commit, no tests to run"
     exit 0
 fi
