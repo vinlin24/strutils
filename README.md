@@ -112,9 +112,6 @@ EXAMPLES:
     $ chr -d _ $(seq 68 75)
     D_E_F_G_H_I_J_K
 
-TODO: Improvements to be made. Some options or combination of options do
-not yet work as intended.
-
 
 ### spread
 
