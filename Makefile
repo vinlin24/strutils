@@ -9,9 +9,6 @@ editable:
 readme:
 	./update_readme.py
 
-test:
-	cd test && python -m unittest
-
 clean:
 	-find . -type d -name __pycache__ -exec rm -rf {} +
 	-find src -type d -name "*.egg-info" -exec rm -rf {} +
