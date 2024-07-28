@@ -4,6 +4,7 @@ Code to share among tests.
 """
 
 import contextlib
+import re
 import subprocess
 import unittest
 from io import TextIOWrapper
@@ -52,6 +53,19 @@ class TestBase(unittest.TestCase):
         self.assertEqual(stdout, expected_stdout)
         if not stderr_ok:
             self.assertEqual(stderr, "")
+
+    def assert_immediate_exit_with_error_message(
+        self,
+        process_result: ProcessResult,
+        regex: re.Pattern | str | None = None,
+    ) -> None:
+        stdout, stderr, exit_code = process_result
+        self.assertNotEqual(exit_code, 0)
+        if regex is None:
+            self.assertNotEqual(stderr, "")
+        else:
+            self.assertRegex(stderr, regex)
+        self.assertEqual(stdout, "")
 
     @contextlib.contextmanager
     def temporary_file(self) -> Generator[TextIOWrapper, None, None]:
