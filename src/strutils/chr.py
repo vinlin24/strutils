@@ -191,8 +191,8 @@ def print_one_per_line(
             return f"{string.ljust(max_width)} {chr(code).ljust(width)}"
     else:
         def format_line(code: int, string: str) -> str:
-            del code
-            return string
+            del string
+            return chr(code)
 
     lines = "\n".join(
         format_line(code, string)
