@@ -43,6 +43,15 @@ After fresh clones, run this rule to set up Git hooks:
 make hooks
 ```
 
+You can install the project globally in [**editable**
+mode](https://setuptools.pypa.io/en/latest/userguide/development_mode.html) such
+that the scripts are a "live" copy. This makes it easier to develop and see the
+changes take effect immediately:
+
+```sh
+make editable
+```
+
 To run unit tests for all scripts:
 
 ```sh
