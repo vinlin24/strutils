@@ -109,7 +109,7 @@ from pathlib import Path
 from typing import Final
 
 from .common import argument_validators
-from .common.functional import program_options_struct
+from .common.functional import readonly_struct
 from .common.output import exit_with_error, log_warning, print_stderr
 
 FLAG_WHITESPACE: Final = "S"
@@ -160,7 +160,7 @@ def main() -> None:
     print(generated_string, end=("\n" if options.use_trailing_newline else ""))
 
 
-@program_options_struct
+@readonly_struct
 class ProgramOptions:
     string_length_range: range
     alphabet_literals: list[str]

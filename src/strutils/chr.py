@@ -21,13 +21,11 @@ EXAMPLES:
 import argparse
 import sys
 
-from .common.functional import program_options_struct
+from .common.functional import readonly_struct
 from .common.output import exit_with_error, print_stderr
 
-__author__ = "Vincent Lin"
 
-
-@program_options_struct
+@readonly_struct
 class ProgramOptions:
     code_points: list[str]
     echo_requested: bool
