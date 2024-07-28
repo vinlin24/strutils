@@ -11,8 +11,14 @@ readme: README.md
 README.md: $(wildcard src/strutils/*.py)
 	./update_readme.py
 
+hooks:
+	cp --verbose pre-commit.sh .git/hooks/pre-commit
+
+test:
+	./test.sh
+
 clean:
 	-find . -type d -name __pycache__ -exec rm -rf {} +
 	-find src -type d -name "*.egg-info" -exec rm -rf {} +
 
-.PHONY: default install editable readme test clean
+.PHONY: default install editable readme hooks test clean

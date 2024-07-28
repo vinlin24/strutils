@@ -35,6 +35,29 @@ make install
 ```
 
 
+## Development
+
+After fresh clones, run this rule to set up Git hooks:
+
+```sh
+make hooks
+```
+
+To run unit tests for all scripts:
+
+```sh
+make test
+# OR:
+./tests.sh
+```
+
+To run unit tests only for scripts whose names match a certain `STRING`:
+
+```sh
+./tests.sh STRING
+```
+
+
 ## Usage
 
 
