@@ -1,5 +1,5 @@
 #!/bin/bash
-# USAGE: ./test.sh [-v|--verbose] [PATTERN]
+# USAGE: ./test.sh [-v|--verbose] [PROG]
 
 self="$(basename "$0")"
 script_dir="$(dirname "$0")"
@@ -25,12 +25,17 @@ verbosity_flag=''
 if [ $VERBOSE -eq 1 ]; then
     verbosity_flag=--verbose
 fi
-pattern="${POSITIONAL_ARGS[0]}"
+program_to_test="${POSITIONAL_ARGS[0]}"
 
-if [ -n "$pattern" ]; then
-    echo "$self: running only tests whose name contains: $pattern"
+if [ -n "$program_to_test" ]; then
+    echo "$self: running only tests for program: $program_to_test"
+
+    # Match only tests whose fully qualified name includes `test_<name>.`, which
+    # would be the prefix for tests of the script `test_<name>.py`.
+    test_case_pattern="test_${program_to_test}."
+
     python3 -m unittest discover \
-        $verbosity_flag --start-directory "$test_dir" -k "$pattern"
+        $verbosity_flag --start-directory "$test_dir" -k "$test_case_pattern"
 else
     echo "$self: running ALL tests under $test_dir"
     python3 -m unittest discover \
