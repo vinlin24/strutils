@@ -6,7 +6,9 @@ install:
 editable:
 	deactivate; unset PIP_REQUIRE_VIRTUALENV && pip install -e .
 
-readme:
+readme: README.md
+
+README.md: $(wildcard src/strutils/*.py)
 	./update_readme.py
 
 clean:
