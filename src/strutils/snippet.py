@@ -17,7 +17,7 @@ EXAMPLES:
         "$0"
     ]
 
-    $ ./snippet header.txt --indent 2 --prefix header
+    $ snippet header.txt --indent 2 --prefix header
     "prefix": "header",
     "body": [
       "#!/usr/bin/env ${1:python3}",
@@ -29,7 +29,7 @@ EXAMPLES:
       "$0"
     ]
 
-NOTE: You can pipe the output of this script into a command like clip to
+TIP: You can pipe the output of this script into a command like clip to
 automatically save it to your clipboard.
 """
 
