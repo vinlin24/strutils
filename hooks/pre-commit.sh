@@ -4,7 +4,7 @@
 repo_root="$(git rev-parse --show-toplevel)"
 cd "$repo_root" || exit 1
 
-# (1) Ensure tests are passing.
+# (1) Ensure tests for changed source files are passing.
 
 make test
 

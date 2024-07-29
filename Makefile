@@ -12,7 +12,8 @@ README.md: $(wildcard src/strutils/*.py)
 	./update_readme.py
 
 hooks:
-	cp --verbose pre-commit.sh .git/hooks/pre-commit
+	@cp --verbose hooks/pre-commit.sh .git/hooks/pre-commit
+	@cp --verbose hooks/pre-push.sh .git/hooks/pre-push
 
 test:
 	./test.sh --lazy
