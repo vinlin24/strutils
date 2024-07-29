@@ -1,11 +1,19 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
-Apply Python's chr() on all the input numbers, with support for
-different bases, such as hexadecimal, octal, and binary, by inferring
-from their respective prefixes (0x, 0o/0, 0b) or with a flag.
+Apply Python's chr() on all input numbers (decoding Unicode code points
+to characters).
 
-EXAMPLES:
+Different bases are supported:
+
+    - Decimal (base 10, default)
+    - Hexadecimal (base 16)
+    - Octal (base 8)
+    - Binary (base 2)
+
+Non-decimal base systems can be inferred by their respective prefixes
+(0x, 0o/0, 0b), or the inputs can be explicitly interpreted with a
+chosen base by including the command line flag for it.
+
+EXAMPLES::
 
     $ chr 65 66 67
     A B C
@@ -113,51 +121,85 @@ radix_group.add_argument(
 )
 
 
-def validate_int_with_possible_radix_prefix(
-    value: str,
-    *,
-    base: int | None = None,
-) -> int:
+class CodePoint:
     """
-    Validator for a non-negative integer input, possibly of varying
-    radixes as denoted by their conventional prefix. If base is
-    provided, interpret value with that base regardless of prefix.
+    Wrapper class for bundling a raw string with its code point value,
+    interpreted using a specific or inferred base.
     """
-    if value.startswith("-"):
-        exit_with_error(f"{value} is negative or not an int.")
 
-    def cast_int(string: str, base: int) -> int:
+    def __init__(
+        self,
+        raw_representation: str,
+        base_to_interpret_as: int | None = None,
+    ) -> None:
+        self.raw = raw_representation
+        self.value = self._convert_int_with_possible_radix_prefix(
+            raw_representation,
+            base=base_to_interpret_as,
+        )
+
+    def char(self) -> str:
+        """Return the character mapped by this code point value.
+
+        Raises:
+            ValueError: chr() failed on the code point value. This
+            happens if the value is not in `range(0x110000)`.
+        """
         try:
-            return int(string, base)
+            return chr(self.value)
+        # chr() can raise if arg is not in range(0x110000).
+        except ValueError as error:
+            msg = (
+                "could not get the character of code point "
+                f"{self.raw!r} (decimal {self.value}): {error}"
+            )
+            exit_with_error(msg)
+
+    def _convert_int_with_possible_radix_prefix(
+        self,
+        value: str,
+        base: int | None,
+    ) -> int:
+        """
+        Validator for a non-negative integer input, possibly of varying
+        radixes as denoted by their conventional prefix. If base is
+        provided, interpret value with that base regardless of prefix.
+        """
+        if value.startswith("-"):
+            exit_with_error(f"{value} is negative or not an int.")
+
+        if base is not None:
+            value = value.lstrip("0xob")
+            return self._cast_int(value, base)
+
+        if value.startswith("0x"):
+            return self._cast_int(value, 16)
+
+        # Second condition is to support C-style octal numbers e.g. 0755.
+        if value.startswith("0o") or \
+                value.startswith("0") and value[1:].isnumeric():
+            stripped = value.removeprefix("0").removeprefix("o")
+            return self._cast_int(stripped, 8)
+
+        if value.startswith("0b"):
+            return self._cast_int(value, 2)
+
+        return self._cast_int(value, 10)
+
+    def _cast_int(self, value: str, base: int) -> int:
+        try:
+            return int(value, base)
         except ValueError:
             exit_with_error(
                 f"{value} could not be interpreted "
                 f"as an integer with base {base}.",
             )
 
-    if base is not None:
-        value = value.lstrip("0xob")
-        return cast_int(value, base)
 
-    if value.startswith("0x"):
-        return cast_int(value, 16)
-    # Second condition is to support C-style octal numbers e.g. 0755.
-    if value.startswith("0o") or \
-            value.startswith("0") and value[1:].isnumeric():
-        stripped = value.removeprefix("0").removeprefix("o")
-        return cast_int(stripped, 8)
-    if value.startswith("0b"):
-        return cast_int(value, 2)
-
-    return cast_int(value, 10)
-
-
-def get_codes_from_stdin(*, base: int | None = None) -> list[int]:
+def get_codes_from_stdin(*, base: int | None = None) -> list[CodePoint]:
+    """Get code point input from stdin."""
     tokens = sys.stdin.read().split()
-    return [
-        validate_int_with_possible_radix_prefix(token, base=base)
-        for token in tokens
-    ]
+    return [CodePoint(token, base) for token in tokens]
 
 
 def escaped(ch: str, literal_spaces: bool) -> str:
@@ -172,31 +214,76 @@ def escaped(ch: str, literal_spaces: bool) -> str:
     safe = repr(ch).strip("'\"")
     if safe == " " and not literal_spaces:
         return "SPC"
-    return repr(ch).strip("'\"")
+    return safe
 
 
-def print_one_per_line(
-    codes_in_decimal: list[int],
-    codes_as_strings: list[str],
-    echo: bool,
-) -> None:
+def print_as_is(codes: list[CodePoint]) -> None:
+    """
+    Handle the simplest case, where we literally decode all the
+    characters and print them side-by-side. This is useful when you're
+    decoding a message and just want to see the content as it was
+    originally written.
+    """
+    print("".join(code.char() for code in codes))
+
+
+def print_one_per_line(codes: list[CodePoint]) -> None:
     """Handle the case where each result goes on a separate line."""
+    for code in codes:
+        print(code.char())
+
+
+def echo_one_per_line(codes: list[CodePoint]) -> None:
+    """
+    Handle the case where each result goes on a separate line, with the
+    original string encoding echoed beside the decoded values."""
+    max_width = max(len(code.raw) for code in codes)
+    width = max(len(str(code.value)) for code in codes)
+
+    for code in codes:
+        echo_column = code.raw.ljust(max_width)
+        decoded_column = code.char().ljust(width)
+        print(f"{echo_column} {decoded_column}")
+
+
+def print_horizontally(
+    codes: list[CodePoint],
+    *,
+    echo: bool,
+    delimiter: str,
+    use_literal_spaces: bool,
+) -> None:
+    """
+    Handle the ordinary case where we decode the code point strings and
+    display them side by side. If `echo` is requested, two lines are
+    printed instead:
+
+        1. The decimal value of the provided code point strings.
+        2. The actual decoded values.
+
+    The lines will be lined up and spaced evenly according to the max
+    length needed per entry.
+    """
+    max_width = 0
     if echo:
-        max_width = max(len(code) for code in codes_as_strings)
-        width = max(len(str(code)) for code in codes_in_decimal)
+        max_width = max(len(str(code.value)) for code in codes)
 
-        def format_line(code: int, string: str) -> str:
-            return f"{string.ljust(max_width)} {chr(code).ljust(width)}"
-    else:
-        def format_line(code: int, string: str) -> str:
-            del string
-            return chr(code)
+    # If echoed, the first line is the echo line. The decoded values are
+    # on the line below.
+    if echo:
+        echo_line = delimiter.join(
+            str(code.value).ljust(max_width)
+            for code in codes
+        )
+        print(echo_line)
 
-    lines = "\n".join(
-        format_line(code, string)
-        for code, string in zip(codes_in_decimal, codes_as_strings)
-    )
-    print(lines)
+    def format_char(code: CodePoint) -> str:
+        padded_char = code.char().ljust(max_width)
+        escaped_char = escaped(padded_char, use_literal_spaces)
+        return escaped_char
+
+    decoded_line = delimiter.join(format_char(code) for code in codes)
+    print(decoded_line)
 
 
 def main() -> None:
@@ -213,61 +300,31 @@ def main() -> None:
     else:
         base = None
 
-    codes_as_strings: list[str] = options.code_points
-    codes_in_decimal: list[int] = [
-        validate_int_with_possible_radix_prefix(code, base=base)
-        for code in options.code_points
-    ]
-
-    if not codes_in_decimal:
-        codes_in_decimal = get_codes_from_stdin(base=base)
+    codes = [CodePoint(encoded, base) for encoded in options.code_points]
+    if not codes:
+        codes = get_codes_from_stdin(base=base)
 
     # Ignore echo, doesn't make sense to use it with --print.
     if options.echo_requested and options.print_as_is:
         print_stderr("WARNING: Ignoring --echo since --print was used.")
-    # The simplest case, where we literally decode all the characters
-    # and print them side-by-side. Useful when you're decoding a message
-    # and just want to see the content as it was originally written.
+
     if options.print_as_is:
-        print("".join(chr(code) for code in codes_in_decimal))
+        print_as_is(codes)
         return
 
     if options.one_per_line:
-        print_one_per_line(
-            codes_in_decimal,
-            codes_as_strings,
-            options.echo_requested,
-        )
+        if options.echo_requested:
+            echo_one_per_line(codes)
+        else:
+            print_one_per_line(codes)
         return
 
-    max_width = 0
-    if options.echo_requested:
-        max_width = max(len(str(code)) for code in codes_in_decimal)
-
-    if options.echo_requested:
-        echoed = options.delimiter.join(
-            str(code).ljust(max_width)
-            for code in codes_in_decimal
-        )
-        print(echoed)
-
-    # Actual chr() logic lol.
-    def format_chr(code: int) -> str:
-        try:
-            return escaped(
-                chr(code).ljust(max_width),
-                options.use_literal_spaces,
-            )
-        # chr() can raise if arg is not in range(0x110000).
-        except ValueError as error:
-            msg = f"could not get the character of code point {code}: {error}"
-            exit_with_error(msg)
-
-    output = options.delimiter.join(
-        format_chr(code)
-        for code in codes_in_decimal
+    print_horizontally(
+        codes,
+        echo=options.echo_requested,
+        delimiter=options.delimiter,
+        use_literal_spaces=options.use_literal_spaces
     )
-    print(output)
 
 
 if __name__ == "__main__":

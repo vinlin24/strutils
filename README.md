@@ -112,11 +112,21 @@ whitespace in your shell script.
 
 ### chr
 
-Apply Python's chr() on all the input numbers, with support for
-different bases, such as hexadecimal, octal, and binary, by inferring
-from their respective prefixes (0x, 0o/0, 0b) or with a flag.
+Apply Python's chr() on all input numbers (decoding Unicode code points
+to characters).
 
-EXAMPLES:
+Different bases are supported:
+
+    - Decimal (base 10, default)
+    - Hexadecimal (base 16)
+    - Octal (base 8)
+    - Binary (base 2)
+
+Non-decimal base systems can be inferred by their respective prefixes
+(0x, 0o/0, 0b), or the inputs can be explicitly interpreted with a
+chosen base by including the command line flag for it.
+
+EXAMPLES::
 
     $ chr 65 66 67
     A B C
