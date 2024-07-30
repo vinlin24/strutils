@@ -109,8 +109,9 @@ fi
 
 ##### INVOKE UNITTEST #####
 
-# If there was a change
-if src_common_code_changed; then
+# If there was a change in the common code, run all tests regardless if running
+# in lazy mode.
+if [ $RUN_AS_NEEDED -eq 1 ] && src_common_code_changed; then
     echo "$self: warning: common source code changed, will run all tests"
     test_names_to_run=()
     test_case_pattern_tokens=()
