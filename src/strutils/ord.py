@@ -57,6 +57,12 @@ bases_group.add_argument("-X", action="store_true",
                          help="equivalent to specifying -x and -u")
 bases_group.add_argument("-o", "--octal", "--oct", action="store_true",
                          help="output code points as octal")
+bases_group.add_argument("-0", "--octal-zero", "--octal-c",
+                         action="store_true",
+                         dest="use_octal_c_style",
+                         help="output code points as octal, but with C-style "
+                              "prefix (single leading 0) if prefixes are "
+                              "enabled")
 bases_group.add_argument("-b", "--binary", "--bin", action="store_true",
                          help="output code points as binary")
 
@@ -101,6 +107,10 @@ class CharFormatter:
             case Namespace(octal=True):
                 self.caster = oct
                 self.prefix = "0o"
+                self.width = self._digits_needed(digits_per_bit=3)
+            case Namespace(use_octal_c_style=True):
+                self.caster = lambda code: "0" + oct(code).removeprefix("0o")
+                self.prefix = "0"
                 self.width = self._digits_needed(digits_per_bit=3)
             case Namespace(binary=True):
                 self.caster = bin

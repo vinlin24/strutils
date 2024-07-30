@@ -59,6 +59,13 @@ class TestOrd(TestBase):
             "150 145 154 154 157 040 164 150 145 162 145\n",
         )
 
+    def test_octal_c_style_without_prefix(self) -> None:
+        result = self.run_command("ord -0 \"hello there\"")
+        self.assert_success(
+            result,
+            "150 145 154 154 157 040 164 150 145 162 145\n",
+        )
+
     def test_binary(self) -> None:
         result = self.run_command("ord -b \"hello there\"")
         self.assert_success(
@@ -87,6 +94,14 @@ class TestOrd(TestBase):
             result,
             "0o150 0o145 0o154 0o154 0o157 0o040 "
             "0o164 0o150 0o145 0o162 0o145\n",
+        )
+
+    def test_octal_prefixed_c_style(self) -> None:
+        result = self.run_command("ord -0p \"hello there\"")
+        self.assert_success(
+            result,
+            "0150 0145 0154 0154 0157 0040 "
+            "0164 0150 0145 0162 0145\n",
         )
 
     def test_binary_prefixed(self) -> None:
