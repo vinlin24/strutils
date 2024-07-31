@@ -251,7 +251,8 @@ quoting rules. Reading from stdin always treats the string as one token.
 
 ### upper
 
-Apply Python's str.upper() or str.capitalize() on the input words.
+Apply Python's str.upper() or str.capitalize() on the input words to
+capitalize whole words or just the first character of each word.
 
 EXAMPLES:
 

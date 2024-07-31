@@ -1,7 +1,6 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 r"""
-Apply Python's str.upper() or str.capitalize() on the input words.
+Apply Python's str.upper() or str.capitalize() on the input words to
+capitalize whole words or just the first character of each word.
 
 EXAMPLES:
 
@@ -30,6 +29,18 @@ import argparse
 import io
 import string
 import sys
+
+from .common.functional import struct
+
+
+@struct
+class ProgramOptions:
+    strings: list[str]
+    use_title_case: bool
+    force_title_case: bool
+    delimiter: str | None
+    use_trailing_newline: bool
+
 
 parser = argparse.ArgumentParser(
     description=__doc__,
@@ -110,28 +121,23 @@ def transform_to_title_case(
 
 def main() -> None:
     args = parser.parse_args()
+    options = ProgramOptions(**vars(args))
 
-    strings: list[str] = args.strings
-    use_title_case: bool = args.use_title_case
-    force_title_case: bool = args.force_title_case
-    delimiter: str | None = args.delimiter
-    use_trailing_newline: bool = args.use_trailing_newline
+    if not options.strings:
+        options.strings = [sys.stdin.read()]
 
-    if not strings:
-        strings = [sys.stdin.read()]
-
-    if use_title_case:
+    if options.use_title_case:
         transformed = (
             transform_to_title_case(
                 token,
-                delimiter=delimiter,
-                force=force_title_case,
-            ) for token in strings
+                delimiter=options.delimiter,
+                force=options.force_title_case,
+            ) for token in options.strings
         )
     else:
-        transformed = (token.upper() for token in strings)
+        transformed = (token.upper() for token in options.strings)
 
-    print(*transformed, end=("\n" if use_trailing_newline else ""))
+    print(*transformed, end=("\n" if options.use_trailing_newline else ""))
 
 
 if __name__ == "__main__":

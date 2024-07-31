@@ -10,3 +10,8 @@ T = TypeVar("T")
 @dataclass_transform(frozen_default=True, kw_only_default=True)
 def readonly_struct(cls: type[T]) -> type[T]:
     return dataclasses.dataclass(frozen=True, kw_only=True)(cls)
+
+
+@dataclass_transform(kw_only_default=True)
+def struct(cls: type[T]) -> type[T]:
+    return dataclasses.dataclass(kw_only=True)(cls)
