@@ -108,7 +108,7 @@ import sys
 from pathlib import Path
 from typing import Final
 
-from .common import argument_validators
+from .common import parsing
 from .common.functional import readonly_struct
 from .common.output import exit_with_error, log_warning, print_stderr
 
@@ -173,10 +173,7 @@ class ProgramOptions:
 
 
 def parse_options() -> ProgramOptions:
-    parser = argparse.ArgumentParser(
-        description=__doc__,
-        formatter_class=argparse.RawTextHelpFormatter,
-    )
+    parser = parsing.StrUtilsParser(__doc__)
 
     ##### POSITIONAL #####
 
@@ -205,7 +202,7 @@ def parse_options() -> ProgramOptions:
         metavar="FILE",
         action="append",
         default=[],
-        type=argument_validators.valid_regular_file_path,
+        type=parsing.valid_regular_file_path,
         dest="alphabet_files",
         help="file containing characters to include in the alphabet; "
              "duplicates are allowed (the count of a character simply "
@@ -270,14 +267,14 @@ def string_length_arg_to_range(value: str) -> range:
 
     # `value` is simply a "NUM".
     if len(parts) == 1:
-        num = argument_validators.non_negative_int(value)
+        num = parsing.non_negative_int(value)
         return range(num, num + 1)
 
     # `value` is of the form "LO-HI".
     if len(parts) == 2:
         lo, hi = parts
-        lo_num = argument_validators.non_negative_int(lo)
-        hi_num = argument_validators.non_negative_int(hi)
+        lo_num = parsing.non_negative_int(lo)
+        hi_num = parsing.non_negative_int(hi)
         if lo_num > hi_num:
             raise argparse.ArgumentTypeError(
                 "lower bound should be no larger than upper bound when "

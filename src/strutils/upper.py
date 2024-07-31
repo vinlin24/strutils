@@ -25,11 +25,11 @@ title case is done WITHIN each input STRING. That is, the single token
 "hello there" will still be treated as two WORDs.
 """
 
-import argparse
 import io
 import string
 import sys
 
+from .common import parsing
 from .common.functional import struct
 
 
@@ -42,10 +42,7 @@ class ProgramOptions:
     use_trailing_newline: bool
 
 
-parser = argparse.ArgumentParser(
-    description=__doc__,
-    formatter_class=argparse.RawTextHelpFormatter,
-)
+parser = parsing.StrUtilsParser(__doc__)
 
 parser.add_argument(
     "strings",

@@ -26,9 +26,9 @@ EXAMPLES::
     D_E_F_G_H_I_J_K
 """
 
-import argparse
 import sys
 
+from .common import parsing
 from .common.functional import readonly_struct
 from .common.output import exit_with_error, print_stderr
 
@@ -46,18 +46,9 @@ class ProgramOptions:
     use_binary: bool
 
 
-parser = argparse.ArgumentParser(
-    description=__doc__,
-    formatter_class=argparse.RawTextHelpFormatter,
-    add_help=False,
-)
+# Disable -h to use it for hexadecimal.
+parser = parsing.StrUtilsParser(__doc__, disable_short_help=True)
 
-parser.add_argument(
-    "--help",
-    action="help",
-    default=argparse.SUPPRESS,
-    help="show this message and exit",
-)
 parser.add_argument(
     "code_points",
     metavar="CODE",
