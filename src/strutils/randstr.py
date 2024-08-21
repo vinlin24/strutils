@@ -173,7 +173,7 @@ class ProgramOptions:
 
 
 def parse_options() -> ProgramOptions:
-    parser = parsing.StrUtilsParser(__doc__)
+    parser = parsing.StrUtilsParser(__doc__, __package__)
 
     ##### POSITIONAL #####
 

@@ -7,14 +7,15 @@ from .. import __author__, __version__
 class StrUtilsParser(argparse.ArgumentParser):
     def __init__(
         self,
-        description: str,
+        description: str | None,
+        package: str | None,
         *,
         disable_short_help: bool = False,
     ) -> None:
         super().__init__(
             description=description,
             formatter_class=argparse.RawTextHelpFormatter,
-            epilog=f"{__package__} {__version__} by {__author__}.",
+            epilog=f"{package} {__version__} by {__author__}.",
             add_help=not disable_short_help,
         )
 

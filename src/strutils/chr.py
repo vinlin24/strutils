@@ -47,7 +47,7 @@ class ProgramOptions:
 
 
 # Disable -h to use it for hexadecimal.
-parser = parsing.StrUtilsParser(__doc__, disable_short_help=True)
+parser = parsing.StrUtilsParser(__doc__, __package__, disable_short_help=True)
 
 parser.add_argument(
     "code_points",

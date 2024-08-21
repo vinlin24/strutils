@@ -42,7 +42,7 @@ class ProgramOptions:
     use_trailing_newline: bool
 
 
-parser = parsing.StrUtilsParser(__doc__)
+parser = parsing.StrUtilsParser(__doc__, __package__)
 
 parser.add_argument(
     "strings",
