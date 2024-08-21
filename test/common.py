@@ -71,8 +71,8 @@ class TestBase(unittest.TestCase):
     def temporary_file(self) -> Generator[TextIOWrapper, None, None]:
         path = Path("temporary_file")
         path.touch(0o600, exist_ok=True)
+        file = path.open("rt+", encoding="utf-8")
         try:
-            file = path.open("rt+", encoding="utf-8")
             yield file
         finally:
             file.close()
